@@ -272,7 +272,6 @@ return [
         | Specify the provider that is used to create and decode the tokens.
         |
         */
-
         'jwt' => PHPOpenSourceSaver\JWTAuth\Providers\JWT\Lcobucci::class,
 
         /*

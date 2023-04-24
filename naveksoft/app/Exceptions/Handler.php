@@ -2,6 +2,9 @@
 
 namespace App\Exceptions;
 
+
+use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -35,7 +38,24 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Data is empty'.$e->getMessage()
+            ]);
             //
         });
+    }
+
+
+    public function render($request, Throwable $e)
+    {
+        return response()->json(
+            [
+                'errors' => [
+                    'status' => 401,
+                    'message' => 'Unauthenticated',
+                ]
+            ], 401
+        );
     }
 }

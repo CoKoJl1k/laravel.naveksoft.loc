@@ -14,38 +14,47 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+       // return response()->json([ 'valid' => auth()->check() ]);
+       // $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        $credentials = $request->only('email', 'password');
 
-        $token = Auth::attempt($credentials);
-        if (!$token) {
+        if (!empty($request->email) && !empty($request->password)) {
+            $request->validate([
+                'email' => 'required|string|email',
+                'password' => 'required|string',
+            ]);
+            $credentials = $request->only('email', 'password');
+            $token = Auth::attempt($credentials);
+
+            if (!$token) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
+
+            $user = Auth::user();
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ]);
+        } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+                'msg' => 'Data is empty'
+            ]);
         }
-
-        $user = Auth::user();
-        return response()->json([
-            'status' => 'success',
-            'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
     }
 
-    public function register(Request $request){
-
+    public function register(Request $request)
+    {
         // dd($request->input());
         if (!empty($request->input())) {
             $request->validate([
@@ -60,11 +69,8 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-          //  dd($user);
+            // IMPOSRTANT add to  model  (User.php)  body in 2 methods JWT
             $token = Auth::login($user);
-
-            dd($token);
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'User created successfully',
@@ -86,8 +92,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        dd('hello');
-
+        //dd('hello');
         Auth::logout();
         return response()->json([
             'status' => 'success',

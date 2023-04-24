@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,8 +29,15 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
-
 });
 
+//Route::resource('users',UserController::class);
+//Route::resource('comments',CommentController::class);
+//Route::resource('reply',ReplyController::class);
+//
 
+
+Route::resource('users',UserController::class)->middleware('auth:api');
+Route::resource('comments',CommentController::class)->middleware('auth:api');
+Route::resource('reply',ReplyController::class)->middleware('auth:api');
 
