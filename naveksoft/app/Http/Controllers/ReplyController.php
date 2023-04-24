@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\Reply;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReplyController extends Controller
 {
@@ -34,7 +37,22 @@ class ReplyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    //   dd($request);
+
+        $user_id = auth('api')->user()->id;
+
+        $reply = Reply::create([
+            'text' => $request->text,
+            'role' => $request->role,
+            'comment_id' => $request->comment_id,
+            'user_id' => $user_id
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Comment created successfully',
+            'reply' => $reply
+        ]);
     }
 
     /**
@@ -79,6 +97,19 @@ class ReplyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = Reply::destroy($id);
+       // $result = DB::table('replies')->where('id', '=', $id)->delete();
+        if ($result) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Reply deleted successfully',
+                'result' => $result
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'result' => $result
+            ]);
+        }
     }
 }

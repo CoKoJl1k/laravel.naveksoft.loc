@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReplyTable extends Migration
+class CreateRepliesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateReplyTable extends Migration
      */
     public function up()
     {
-        Schema::create('reply', function (Blueprint $table) {
+        Schema::create('replies', function (Blueprint $table) {
             $table->id();
             $table->string('text')->nullable();
             $table->string('role')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('comment_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('comment_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateReplyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reply');
+        Schema::dropIfExists('replies');
     }
 }

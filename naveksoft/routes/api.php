@@ -31,13 +31,14 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh');
 });
 
+
 //Route::resource('users',UserController::class);
-//Route::resource('comments',CommentController::class);
-//Route::resource('reply',ReplyController::class);
+Route::resource('comments',CommentController::class);
+Route::resource('replies',ReplyController::class);
 //
 
 
 Route::resource('users',UserController::class)->middleware('auth:api');
-Route::resource('comments',CommentController::class)->middleware('auth:api');
-Route::resource('reply',ReplyController::class)->middleware('auth:api');
+//Route::resource('comments',CommentController::class)->middleware('auth:api');
+//Route::resource('reply',ReplyController::class)->middleware('auth:api');
 

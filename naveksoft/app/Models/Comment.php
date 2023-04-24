@@ -15,7 +15,7 @@ class Comment extends Model
         'reply_id',
     ];
 
-    public function replys()
+    public function replies()
     {
         return $this->hasMany(Reply::class);
     }
