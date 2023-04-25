@@ -12,9 +12,13 @@ class Reply extends Model
     protected $fillable = [
         'text',
         'user_id',
-        'comment_id',
-        'role',
+        'comment_id'
     ];
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function comments()
     {

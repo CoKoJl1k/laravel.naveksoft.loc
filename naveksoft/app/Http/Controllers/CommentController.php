@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Reply;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class CommentController extends Controller
 {
@@ -34,19 +31,15 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $user_id = auth('api')->user()->id;
-      //  dd($user_id);
-       // dd($request->bearerToken());
         $comment = Comment::create([
             'text' => $request->text,
-             'user_id' => $user_id
+            'user_id' => $user_id
         ]);
-
-      //  dd();
         return response()->json([
             'status' => 'success',
             'message' => 'Comment created successfully',
@@ -92,14 +85,11 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-
-//dd($id);
         $result = Comment::destroy($id);
-
         if ($result) {
             return response()->json([
                 'status' => 'success',

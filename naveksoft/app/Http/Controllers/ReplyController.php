@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
 use App\Models\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +11,18 @@ class ReplyController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
+        $replies = Reply::paginate(3);
+       // $replies = Reply::where('id', '>', 7)->paginate( 3);
+      //  $replies = Reply::all();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All replies',
+            'replies' => $replies
+        ]);
     }
 
     /**
@@ -33,26 +39,29 @@ class ReplyController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-    //   dd($request);
-
-        $user_id = auth('api')->user()->id;
-
-        $reply = Reply::create([
-            'text' => $request->text,
-            'role' => $request->role,
-            'comment_id' => $request->comment_id,
-            'user_id' => $user_id
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Comment created successfully',
-            'reply' => $reply
-        ]);
+        $user =  auth('api')->user();
+        if ($user->role === 'admin') {
+            $reply = Reply::create([
+                'text' => $request->text,
+                'role' => $request->role,
+                'comment_id' => $request->comment_id,
+                'user_id' => $user->id
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Reply created successfully',
+                'reply' => $reply
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'fail',
+                'message' => "You do not have enough access rights",
+            ]);
+        }
     }
 
     /**
@@ -93,7 +102,7 @@ class ReplyController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
